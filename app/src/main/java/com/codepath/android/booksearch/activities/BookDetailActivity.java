@@ -1,18 +1,27 @@
 package com.codepath.android.booksearch.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.codepath.android.booksearch.R;
 
 public class BookDetailActivity extends AppCompatActivity {
     private ImageView ivBookCover;
     private TextView tvTitle;
     private TextView tvAuthor;
+    Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +29,27 @@ public class BookDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_detail);
 
         // Fetch views
+        back = (Button) findViewById(R.id.backbtn);
         ivBookCover = (ImageView) findViewById(R.id.ivBookCover);
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvAuthor = (TextView) findViewById(R.id.tvAuthor);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         // Extract book object from intent extras
+        String title = getIntent().getStringExtra("title");
+        String author = getIntent().getStringExtra("author");
+        getSupportActionBar().setTitle(title);
+        tvTitle.setText(title);
+        tvAuthor.setText(author);
 
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(BookDetailActivity.this, BookListActivity.class);
+                startActivity(i);
+            }
+        });
         // Checkpoint #5
         // Reuse the Toolbar previously used in the detailed activity by referring to this guide
         // Follow using a Toolbar guide to set the Toolbar as the ActionBar.
