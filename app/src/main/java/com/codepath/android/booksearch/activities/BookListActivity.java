@@ -1,5 +1,6 @@
 package com.codepath.android.booksearch.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,7 +8,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +40,8 @@ public class BookListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
-
-        // Checkpoint #3
-        // Switch Activity to Use a Toolbar
-        // see http://guides.codepath.org/android/Using-the-App-ToolBar#using-toolbar-as-actionbar
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         rvBooks = findViewById(R.id.rvBooks);
         abooks = new ArrayList<>();
 
@@ -53,15 +55,13 @@ public class BookListActivity extends AppCompatActivity {
                         "An item at position " + position + " clicked!",
                         Toast.LENGTH_SHORT).show();
 
-                // Handle item click here:
-                // Checkpoint #5
-                // Hook up Book Detail View
-                // see https://guides.codepath.org/android/Using-the-RecyclerView#attaching-click-handlers-using-listeners for setting up click listeners
-
-                // Create Intent to start BookDetailActivity
-                // Get Book at the given position
-                // Pass the book into details activity using extras
-                // see http://guides.codepath.org/android/Using-Intents-to-Create-Flows
+                Intent intent = new Intent(BookListActivity.this, BookDetailActivity.class);
+                Book book = abooks.get(position);
+                String title = book.getTitle();
+                String auth = book.getAuthor();
+                intent.putExtra("title", title);
+                intent.putExtra("author", auth);
+                startActivity(intent);
             }
         });
 
@@ -71,8 +71,6 @@ public class BookListActivity extends AppCompatActivity {
         // Set layout manager to position the items
         rvBooks.setLayoutManager(new LinearLayoutManager(this));
 
-        // Fetch the data remotely
-        fetchBooks("Oscar Wilde");
     }
 
     // Executes an API call to the OpenLibrary search endpoint, parses the results
@@ -117,14 +115,24 @@ public class BookListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_book_list, menu);
-        // Checkpoint #4
-        // Add SearchView to Toolbar
-        // Refer to http://guides.codepath.org/android/Extended-ActionBar-Guide#adding-searchview-to-actionbar guide for more details
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                fetchBooks(query);
+                return true;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         // Checkpoint #7 Show Progress Bar
         // see https://guides.codepath.org/android/Handling-ProgressBars#progress-within-actionbar
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
