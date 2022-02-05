@@ -1,6 +1,7 @@
 package com.codepath.android.booksearch.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     }
 
     // View lookup cache
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView ivCover;
         public TextView tvTitle;
         public TextView tvAuthor;
@@ -56,6 +57,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 }
             });
         }
+
     }
 
     public BookAdapter(Context context, ArrayList<Book> aBooks) {
